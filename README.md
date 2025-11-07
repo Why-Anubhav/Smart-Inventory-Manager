@@ -38,3 +38,7 @@ A console-based **Inventory Management System** built using **C++**, designed to
 ### 1. Clone the Repository
 ```bash
 git clone https://github.com/<your-username>/Smart-Inventory-Manager.git
+
+cd InventoryManager/backend
+npm install express cors body-parser
+npm start
