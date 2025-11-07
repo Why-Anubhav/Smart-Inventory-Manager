@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Inventory Manager</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>📦 Smart Inventory Manager</h1>
+            <div class="header-stats">
+                <div class="stat-card">
+                    <span class="stat-label">Total Products</span>
+                    <span class="stat-value" id="totalProducts">0</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Total Items</span>
+                    <span class="stat-value" id="totalItems">0</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Total Value</span>
+                    <span class="stat-value" id="totalValue">₹0</span>
+                </div>
+                <div class="stat-card alert">
+                    <span class="stat-label">Low Stock Alerts</span>
+                    <span class="stat-value" id="lowStockCount">0</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <nav class="nav-menu">
+                    <button class="nav-btn active" data-view="all">
+                        📋 All Products
+                    </button>
+                    <button class="nav-btn" data-view="add">
+                        ➕ Add Product
+                    </button>
+                    <button class="nav-btn" data-view="alerts">
+                        🚨 Low Stock Alerts
+                    </button>
+                    <button class="nav-btn" data-view="categories">
+                        📂 Categories
+                    </button>
+                </nav>
+            </aside>
+
+            <!-- Content Area -->
+            <section class="content-area">
+                <!-- All Products View -->
+                <div id="allProductsView" class="view active">
+                    <div class="view-header">
+                        <h2>All Products</h2>
+                        <div class="search-box">
+                            <input type="text" id="searchInput" placeholder="Search products...">
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table class="products-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Category</th>
+                                    <th>Quantity</th>
+                                    <th>Price (₹)</th>
+                                    <th>Reorder Level</th>
+                                    <th>Lead Time</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="productsTableBody">
+                                <tr>
+                                    <td colspan="9" class="no-data">No products found. Add your first product!</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Add Product View -->
+                <div id="addProductView" class="view">
+                    <div class="view-header">
+                        <h2>Add New Product</h2>
+                    </div>
+                    <form id="addProductForm" class="product-form">
+                        <div class="form-group">
+                            <label for="productName">Product Name *</label>
+                            <input type="text" id="productName" required>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="productQuantity">Quantity *</label>
+                                <input type="number" id="productQuantity" min="0" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="productPrice">Price (₹) *</label>
+                                <input type="number" id="productPrice" min="0" step="0.01" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="productReorder">Reorder Level *</label>
+                                <input type="number" id="productReorder" min="0" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="productLead">Lead Time (days) *</label>
+                                <input type="number" id="productLead" min="0" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="productCategory">Category *</label>
+                            <select id="productCategory" required>
+                                <option value="">Select a category</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Product</button>
+                    </form>
+                </div>
+
+                <!-- Low Stock Alerts View -->
+                <div id="alertsView" class="view">
+                    <div class="view-header">
+                        <h2>🚨 Low Stock Alerts</h2>
+                    </div>
+                    <div id="alertsContainer" class="alerts-container">
+                        <p class="no-data">No low stock alerts!</p>
+                    </div>
+                </div>
+
+                <!-- Categories View -->
+                <div id="categoriesView" class="view">
+                    <div class="view-header">
+                        <h2>📂 Products by Category</h2>
+                        <select id="categoryFilter" class="category-select">
+                            <option value="">Select a category</option>
+                        </select>
+                    </div>
+                    <div id="categoryProductsContainer" class="category-products">
+                        <p class="no-data">Select a category to view products</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Edit Product</h2>
+            <form id="editProductForm" class="product-form">
+                <input type="hidden" id="editProductId">
+                <div class="form-group">
+                    <label for="editProductName">Product Name *</label>
+                    <input type="text" id="editProductName" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editProductQuantity">Quantity *</label>
+                        <input type="number" id="editProductQuantity" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editProductPrice">Price (₹) *</label>
+                        <input type="number" id="editProductPrice" min="0" step="0.01" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editProductReorder">Reorder Level *</label>
+                        <input type="number" id="editProductReorder" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editProductLead">Lead Time (days) *</label>
+                        <input type="number" id="editProductLead" min="0" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="editProductCategory">Category *</label>
+                    <select id="editProductCategory" required>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Update Product</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Stock Update Modal -->
+    <div id="stockModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Update Stock</h2>
+            <form id="stockUpdateForm" class="product-form">
+                <input type="hidden" id="stockProductId">
+                <p>Product: <strong id="stockProductName"></strong></p>
+                <p>Current Stock: <strong id="stockProductQuantity"></strong></p>
+                <div class="form-group">
+                    <label>Operation</label>
+                    <div class="radio-group">
+                        <label>
+                            <input type="radio" name="stockOperation" value="add" checked>
+                            Add Stock
+                        </label>
+                        <label>
+                            <input type="radio" name="stockOperation" value="remove">
+                            Remove Stock
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="stockAmount">Amount *</label>
+                    <input type="number" id="stockAmount" min="1" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Update Stock</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
